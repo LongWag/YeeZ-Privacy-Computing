@@ -38,4 +38,4 @@ tool.test(array2)
 print(tool)
 tool.write_batch(simple_sealed_file, array, public_key)
 
-tool.seal_file("/home/zhangsz/test.txt", "/home/zhangsz/test.txt", "/home/zhangsz/test.txt", public_key, hash_256)
+#tool.seal_file("/home/zhangsz/test.txt", "/home/zhangsz/test.txt", "/home/zhangsz/test.txt", public_key, hash_256)
