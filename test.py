@@ -38,4 +38,7 @@ tool.test(array2)
 print(tool)
 tool.write_batch(simple_sealed_file, array, public_key)
 
-#tool.seal_file("/home/zhangsz/test.txt", "/home/zhangsz/test.txt", "/home/zhangsz/test.txt", public_key, hash_256)
+tool.seal_file("/home/zhangsz/zszYeez/YeeZ-Privacy-Computing/./lib/libiris_reader.so",
+    "/home/zhangsz/zszYeez/YeeZ-Privacy-Computing/bin/iris.data",
+    "/home/zhangsz/zszYeez/YeeZ-Privacy-Computing/123", 
+    public_key, hash_256)
