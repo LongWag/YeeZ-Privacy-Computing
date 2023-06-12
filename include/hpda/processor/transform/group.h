@@ -25,7 +25,6 @@ public:
   }
   //处理分组函数
   void process_groupby() {
-    std::unordered_map<std::string, std::vector<InputObjType>> information;
     //生成information
     group(information);
     //根据分组后的结果生成result
@@ -34,7 +33,7 @@ public:
     add_to_next_input(information);
   }
 
-  void group(std::unordered_map<std::string, std::vector<InputObjType>> &information) {
+  void group() {
     for (auto data : source_data) {
       std::string hash = "";
       // TODO : 获取GroupByType中的类型并生成对应的hash
@@ -42,7 +41,7 @@ public:
     }
   }
 
-  void generate_output(std::unordered_map<std::string, std::vector<InputObjType>> &information) {
+  void generate_output() {
     //根据OutputObjType生成result
   }
 
@@ -54,6 +53,7 @@ public:
     return m_data;
   }
 protected:
+  std::unordered_map<std::string, std::vector<InputObjType>> information;
   std::vector<InputObjType> source_data;
   std::vector<OutputObjType> result;
   OutputObjType m_data;
