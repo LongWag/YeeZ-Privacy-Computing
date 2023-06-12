@@ -17,14 +17,19 @@ public:
 
   virtual bool process() {
     if (!base::has_input_value()) {
-      return false;
+      return true;
     }
     m_data.push_back(base::input_value().make_copy());
     base::consume_input_value();
-    return true;
+    return false;
   }
 
-  virtual InputObjType output_value() { return m_data.back(); }
+  virtual InputObjType output_value() {
+    if (m_data.size() == 0) {
+      return InputObjType();
+    }
+    return m_data.back(); 
+  }
 
   std::vector<InputObjType> &values() { return m_data; }
   const std::vector<InputObjType> &values() const { return m_data; }
