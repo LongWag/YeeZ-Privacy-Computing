@@ -1,5 +1,6 @@
 #pragma once
 #include <hpda/processor/processor_base.h>
+#include "ypc/stbox/tsgx/log.h"
 
 namespace hpda {
 namespace processor {
@@ -9,33 +10,31 @@ template <typename InputObjType>
 class all_impl : public processor_base<InputObjType, InputObjType> {
 public:
   all_impl(::hpda::internal::processor_with_output<InputObjType> *upper_stream)
-      : processor_base<InputObjType, InputObjType>(upper_stream) {}
+      : processor_base<InputObjType, InputObjType>(upper_stream), nums(0) {}
 
   virtual ~all_impl() {}
 
   typedef processor_base<InputObjType, InputObjType> base;
 
   virtual bool process() {
-    if (!base::has_input_value()) {
+    if (base::has_input_value()) {
+      m_data = base::input_value().make_copy();
+      base::consume_input_value();
       return true;
     }
-    m_data.push_back(base::input_value().make_copy());
-    base::consume_input_value();
-    return false;
+    else {
+      return false;
+    }
   }
 
   virtual InputObjType output_value() {
-    if (m_data.size() == 0) {
-      return InputObjType();
-    }
-    return m_data.back(); 
+    return m_data;
   }
 
-  std::vector<InputObjType> &values() { return m_data; }
-  const std::vector<InputObjType> &values() const { return m_data; }
-
 protected:
-  std::vector<InputObjType> m_data;
+  InputObjType m_data;
+  size_t m_index;
+  uint32_t nums;
 };
 } // namespace internal
 template <typename T> using all_t = internal::all_impl<T>;

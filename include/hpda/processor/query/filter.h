@@ -30,7 +30,6 @@ public:
     base::consume_input_value();
     return b;
   }
-
   virtual InputObjType output_value() { return m_data; }
 
 protected:

@@ -6,58 +6,42 @@ namespace hpda {
 namespace processor {
 namespace internal {
 
-template <typename InputObjType, typename OutputObjType, typename GroupByType>
-class groupby_impl_test : public processor_base<InputObjType, OutputObjType> {
+template <typename InputObjType>
+class groupby_impl_test : public processor_base<InputObjType, std::vector<InputObjType>> {
 public:
   groupby_impl_test(::hpda::internal::processor_with_output<InputObjType> *upper_stream) 
-    : processor_base<InputObjType, OutputObjType>(upper_stream) {}
+    : processor_base<InputObjType, std::vector<InputObjType>>(upper_stream), it(information.begin()) {}
   virtual ~groupby_impl_test() {}
-  typedef processor_base<InputObjType, OutputObjType> base;
+  typedef processor_base<InputObjType, std::vector<InputObjType>> base;
   virtual bool process() {
-    //完成接收全部数据，需要进行处理
-    if (!base::has_input_value()) {
-      process_groupby();
+    if (base::has_input_value()) {
+      InputObjType value = base::input_value().make_copy();
+      base::consume_input_value();
+      std::string key = "";
+      std::string ID = std::to_string(value.template get<ID>());
+      key += ID;
+      std::string CITY = value.template get<CITY>();
+      key += CITY;
+      information[key].push_back(value);
+      return false;
+    } else if (it != information.end()) {
       return true;
-    }
-    source_data.push_back(base::input_value().make_copy());
-    base::consume_input_value();
-    return false;
-  }
-  //处理分组函数
-  void process_groupby() {
-    //生成information
-    group(information);
-    //根据分组后的结果生成result
-    generate_output(information);
-    //将result加入到下一步的输入中
-    add_to_next_input(information);
-  }
-
-  void group() {
-    for (auto data : source_data) {
-      std::string hash = "";
-      // TODO : 获取GroupByType中的类型并生成对应的hash
-      information[hash].push_back(data);
+    } else {
+      return false;
     }
   }
 
-  void generate_output() {
-    //根据OutputObjType生成result
-  }
-
-  void add_to_next_input() {
-    //将result中的元素加入到下一步的输入中
-  }
-
-  virtual OutputObjType output_value() {
-    return m_data;
+  virtual InputObjType output_value() {
+    InputObjType result = *it;
+    it++;
+    return result;
   }
 protected:
   std::unordered_map<std::string, std::vector<InputObjType>> information;
-  std::vector<InputObjType> source_data;
-  std::vector<OutputObjType> result;
-  OutputObjType m_data;
+  typename std::unordered_map<std::string, std::vector<InputObjType>>::iterator it;
 };
+
+
 template <typename InputColumnType, typename OutputColumnType>
 class aggregator_base {};
 
