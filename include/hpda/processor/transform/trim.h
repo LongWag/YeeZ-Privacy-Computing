@@ -1,5 +1,6 @@
 #pragma once
 #include <hpda/processor/processor_base.h>
+#include "ypc/stbox/tsgx/log.h"
 
 namespace hpda {
 namespace processor {
@@ -9,7 +10,8 @@ template <typename InputObjType, typename OutputObjType>
 class trim_impl : public processor_base<InputObjType, OutputObjType> {
 public:
   trim_impl(::hpda::internal::processor_with_output<InputObjType> *upper_stream)
-      : processor_base<InputObjType, OutputObjType>(upper_stream) {}
+      : processor_base<InputObjType, OutputObjType>(upper_stream) {
+      }
 
   virtual ~trim_impl() {}
 
@@ -24,7 +26,9 @@ public:
     return true;
   }
 
-  virtual OutputObjType output_value() { return m_data; }
+  virtual OutputObjType output_value() {
+    return m_data;
+  }
 
 protected:
   OutputObjType m_data;

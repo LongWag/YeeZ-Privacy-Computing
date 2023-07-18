@@ -16,6 +16,27 @@ public:
 
   typedef processor_base<InputObjType, InputObjType> base;
 
+  void quick_sort(std::vector<InputObjType> &datas, int left, int right) {
+    int i = left, j = right;
+    if (i > j) {
+      return;
+    }
+    InputObjType key = datas[left].make_copy();
+    while (i < j) {
+      while (i < j && datas[j].template get<T>() >= key.template get<T>()) {
+        j--;
+      }
+      datas[i] = datas[j].make_copy();
+      while (i < j && datas[i].template get<T>() <= key.template get<T>()) {
+        i++;
+      }
+      datas[j] = datas[i].make_copy();
+    }
+    datas[i] = key.make_copy();
+    quick_sort(datas, left, i - 1);
+    quick_sort(datas, i + 1, right);
+  }
+
   virtual bool process() {
     if (base::has_input_value()) {
       m_datas.push_back(base::input_value().make_copy());
@@ -23,7 +44,7 @@ public:
       return false;
     } else {
       if (is_sorted == false) {
-        std::sort(m_datas.begin(), m_datas.end(), [](InputObjType a, InputObjType b) {return a.template get<T>() < b.template get<T>();});
+        quick_sort(m_datas, 0, m_datas.size() - 1);
         is_sorted = true;
       }
       if (p >= m_datas.size()) {
@@ -34,7 +55,7 @@ public:
   }
 
   virtual InputObjType output_value() {
-    InputObjType result = m_datas[p];
+    InputObjType result = m_datas[p].make_copy();
     p++;
     return result;
   }
