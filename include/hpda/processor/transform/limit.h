@@ -13,7 +13,7 @@ public:
       ::hpda::internal::processor_with_output<InputObjType> *upper_stream,
       uint64_t left, uint64_t right)
       : processor_base<InputObjType, InputObjType>(upper_stream),
-        m_num_left(right), m_num_right(right), m_cur_num(1) {}
+        m_num_left(left), m_num_right(right), m_cur_num(1) {}
 
   virtual ~limit_impl() {}
 
